@@ -1,0 +1,15 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "API for the portal application",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Lewis Dean",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "firebase-admin": "^9.7.0"
+  }
+}
