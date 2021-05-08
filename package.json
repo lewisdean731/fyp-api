@@ -4,12 +4,16 @@
   "description": "API for the portal application",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "prettier:base": "prettier 'src/**'",
+    "prettier:check": "npm run prettier:base -- --list-different",
+    "prettier:write": "npm run prettier:base -- --write"
   },
   "author": "Lewis Dean",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "firebase-admin": "^9.7.0"
+    "firebase-admin": "^9.7.0",
+    "prettier": "^2.2.1"
   }
 }
