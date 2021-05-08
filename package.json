@@ -4,6 +4,7 @@
   "description": "API for the portal application",
   "main": "index.js",
   "scripts": {
+    "start": "node src/index.js",
     "test": "test",
     "prettier:base": "prettier 'src/**'",
     "prettier:check": "npm run prettier:base -- --list-different",
