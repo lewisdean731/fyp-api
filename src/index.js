@@ -19,11 +19,11 @@ app.use(bodyParser.json());
 // protect all routes
 const auth = require("./utils/authUtil");
 app.use(function (req, res, next) {
-  if (!req.get('authorization')){
-    return res.status(403).json({ error: 'Unauthorised!' });
+  if (!req.get("authorization")) {
+    return res.status(403).json({ error: "Unauthorised!" });
   }
-  if (!auth.verifyToken(req.get('authorization'))){
-    return res.status(403).json({ error: 'Unauthorised!' });
+  if (!auth.verifyToken(req.get("authorization"))) {
+    return res.status(403).json({ error: "Unauthorised!" });
   }
   next();
 });
