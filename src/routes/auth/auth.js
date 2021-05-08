@@ -5,11 +5,10 @@ module.exports = function (app) {
       .auth()
       .verifyIdToken(req.query.token)
       .then((decodedToken) => {
-        res.send(decodedToken.uid);
+        return res.json(decodedToken.uid);
       })
       .catch((error) => {
-        res.status(401);
-        res.send(error);
+        return res.status(401).json(error);
       });
   });
 };

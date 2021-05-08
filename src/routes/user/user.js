@@ -1,4 +1,4 @@
-require("../../utils/authUtil");
+const auth = require("../../utils/authUtil");
 
 module.exports = function (app, db) {
   app
@@ -11,11 +11,10 @@ module.exports = function (app, db) {
           teams: req.body.teams,
         })
         .then((response) => {
-          res.send(response);
+          return res.json(response);
         })
         .catch((error) => {
-          res.status(500);
-          res.send(error);
+          return res.status(500).json(error);
         });
     })
 
@@ -23,10 +22,9 @@ module.exports = function (app, db) {
       const docRef = db.collection("users").doc(req.params.uid);
       const doc = await docRef.get();
       if (!doc.exists) {
-        res.status(404);
-        res.send("No such document!");
+        return res.status(404).json({"error": "No such document!"});
       } else {
-        res.send(doc.data());
+        return res.json(doc.data());
       }
     })
 
@@ -38,24 +36,25 @@ module.exports = function (app, db) {
           teams: req.body.teams,
         })
         .then((response) => {
-          res.send(response);
+          return res.json(response);
         })
         .catch((error) => {
-          res.status(500);
-          res.send(error);
+          return res.status(500).json(error);
         });
     })
 
     .delete(async function (req, res) {
       const docRef = db.collection("users").doc(req.params.uid);
+      if (req.get("authorization") != req.params.uid){
+        return res.status(403).json({"error": "Users can only delete themselves!"})
+      }
       await docRef
         .delete()
         .then((response) => {
-          res.send(response);
+          return res.json(response);
         })
         .catch((error) => {
-          res.status(500);
-          res.send(error);
+          return res.status(500).json(error);
         });
     });
 };
