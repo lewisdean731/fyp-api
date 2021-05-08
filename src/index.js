@@ -16,7 +16,19 @@ const db = admin.firestore();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-require("./routes/auth/auth.js")(app);
+// protect all routes
+const auth = require("./utils/authUtil");
+app.use(function (req, res, next) {
+  if (!req.get('authorization')){
+    return res.status(403).json({ error: 'Unauthorised!' });
+  }
+  if (!auth.verifyToken(req.get('authorization'))){
+    return res.status(403).json({ error: 'Unauthorised!' });
+  }
+  next();
+});
+
+require("./routes/auth/auth.js")(app, admin);
 require("./routes/user/user.js")(app, db);
 
 app.get("/", (req, res) => {
