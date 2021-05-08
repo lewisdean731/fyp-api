@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 5000;
+const port = 8080;
 
 // Admin SDK
 const admin = require("firebase-admin");
@@ -21,6 +21,7 @@ app.listen(port, () => {
 ///////////////
 
 app.get("/api/auth/verifyToken", (req, res) => {
+  console.log(`Verifying token ${req.query.token.slice(0,10)}...`)
   admin
     .auth()
     .verifyIdToken(req.query.token)
