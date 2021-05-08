@@ -10,26 +10,30 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+const db = admin.firestore();
+
+// parse application/json
+app.use(express.json());
+
+// protect all routes
+const auth = require("./utils/authUtil")(admin);
+app.use(function (req, res, next) {
+  if (!req.get("authorization")) {
+    return res.status(403).json({ error: "No authorization given" });
+  }
+  if (auth.verifyToken(req.get("authorization")) === false) {
+    return res.status(403).json({ error: "Unauthorised" });
+  }
+  next();
+});
+
+require("./routes/auth/auth.js")(app, admin);
+require("./routes/user/user.js")(app, db);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-///////////////
-
-app.get("/api/auth/verifyToken", (req, res) => {
-  console.log(`Verifying token ${req.query.token.slice(0,10)}...`)
-  admin
-    .auth()
-    .verifyIdToken(req.query.token)
-    .then((decodedToken) => {
-      res.send(decodedToken.uid);
-    })
-    .catch((error) => {
-      res.status(401);
-      res.send(error);
-    });
+  console.log(`Listening on port ${port}`);
 });
