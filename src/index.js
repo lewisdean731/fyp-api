@@ -16,13 +16,13 @@ const db = admin.firestore();
 app.use(express.json());
 
 // protect all routes
-const auth = require("./utils/authUtil");
+const auth = require("./utils/authUtil")(admin);
 app.use(function (req, res, next) {
   if (!req.get("authorization")) {
-    return res.status(403).json({ error: "Unauthorised!" });
+    return res.status(403).json({ error: "No authorization given" });
   }
-  if (!auth.verifyToken(req.get("authorization"))) {
-    return res.status(403).json({ error: "Unauthorised!" });
+  if (auth.verifyToken(req.get("authorization")) === false) {
+    return res.status(403).json({ error: "Unauthorised" });
   }
   next();
 });

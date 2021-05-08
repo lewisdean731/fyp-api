@@ -1,6 +1,4 @@
-const auth = require("../../utils/authUtil");
-
-module.exports = function (app, db) {
+module.exports = function (app, db, auth) {
   app
     .route("/api/user/:uid")
     .post(async function (req, res) {
