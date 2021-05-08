@@ -14,7 +14,17 @@ module.exports = function(app){
 
   app.route("/api/user")
     .post(function (req, res) {
-      res.send("Create user")
+      const docRef = db.collection('users').doc(req.body.uid)
+
+      await docRef.set({
+        'admin': req.body.admin,
+        'teams': req.body.teams
+      }).then((response) => {
+        res.send(response)
+      }).catch((error) => {
+        res.status(500)
+        res.send(error)
+      })
     })
     .get(function (req, res) {
       res.send("Read user")
