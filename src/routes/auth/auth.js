@@ -1,15 +1,6 @@
-// Admin SDK
-const admin = require("firebase-admin");
-
-const serviceAccount = require("../../resources/admin-sdk-service-account.json");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-module.exports = function(app){
-
+module.exports = function (app) {
   app.get("/api/auth/verifyToken", (req, res) => {
-    console.log(`Verifying token ${req.query.token.slice(0,10)}...`)
+    console.log(`Verifying token ${req.query.token.slice(0, 10)}...`);
     admin
       .auth()
       .verifyIdToken(req.query.token)
@@ -21,5 +12,4 @@ module.exports = function(app){
         res.send(error);
       });
   });
-
-}
+};
