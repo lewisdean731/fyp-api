@@ -20,7 +20,7 @@ module.exports = function (app, db, auth) {
       const docRef = db.collection("users").doc(req.params.uid);
       const doc = await docRef.get();
       if (!doc.exists) {
-        return res.status(404).json({"error": "No such document!"});
+        return res.status(404).json({ error: "No such document!" });
       } else {
         return res.json(doc.data());
       }
@@ -43,8 +43,10 @@ module.exports = function (app, db, auth) {
 
     .delete(async function (req, res) {
       const docRef = db.collection("users").doc(req.params.uid);
-      if (req.get("authorization") != req.params.uid){
-        return res.status(403).json({"error": "Users can only delete themselves!"})
+      if (req.get("authorization") != req.params.uid) {
+        return res
+          .status(403)
+          .json({ error: "Users can only delete themselves!" });
       }
       await docRef
         .delete()
