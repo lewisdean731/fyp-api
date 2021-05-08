@@ -13,8 +13,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 // parse application/json
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+app.use(express.json());
 
 // protect all routes
 const auth = require("./utils/authUtil");
