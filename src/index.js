@@ -16,6 +16,9 @@ const db = admin.firestore();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
+require("./routes/auth/auth.js")(app);
+require("./routes/user/user.js")(app, db);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
