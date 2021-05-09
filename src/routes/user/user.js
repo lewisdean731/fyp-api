@@ -2,7 +2,7 @@ module.exports = function (app, db, auth) {
   app
     .route("/api/user/:uid")
     .post(async function (req, res) {
-      const docRef = db.collection("users").doc(req.body.uid);
+      const docRef = db.collection("users").doc(req.params.uid);
       await docRef
         .set({
           admin: req.body.admin,
