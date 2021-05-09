@@ -1,4 +1,4 @@
-module.exports = function (app, db, auth) {
+module.exports = function (app, db) {
   app
     .route("/api/user/:uid")
     .post(async function (req, res) {
