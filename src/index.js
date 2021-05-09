@@ -12,11 +12,12 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+const auth = require("./utils/authUtil")(admin);
+
 // parse application/json
 app.use(express.json());
 
 // protect all routes
-const auth = require("./utils/authUtil")(admin);
 app.use(function (req, res, next) {
   if (!req.get("authorization")) {
     return res.status(403).json({ error: "No authorization given" });
@@ -29,6 +30,7 @@ app.use(function (req, res, next) {
 
 require("./routes/auth/auth.js")(app, admin);
 require("./routes/user/user.js")(app, db);
+require("./routes/project/project.js")(app, db);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
