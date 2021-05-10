@@ -19,8 +19,8 @@ app.use(express.json());
 
 // protect all routes
 app.use(async function (req, res, next) {
-  if (typeof req.query.apiKey != 'undefined'){
-    if (await auth.verifyApiKey(req.query.apiKey) === false) {
+  if (typeof req.query.apiKey != "undefined") {
+    if ((await auth.verifyApiKey(req.query.apiKey)) === false) {
       return res.status(403).json({ error: "Unauthorised" });
     }
   } else {

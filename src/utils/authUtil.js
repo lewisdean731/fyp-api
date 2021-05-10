@@ -17,17 +17,16 @@ module.exports = function (admin, db) {
 
   auth.verifyApiKey = async function (apiKey) {
     console.log(`Verifying API Key ${apiKey.slice(0, 10)}...`);
-    const key = (apiKey.toString()).split(".")
+    const key = apiKey.toString().split(".");
     const docRef = db.collection("serviceAccounts").doc(key[0]);
-      const doc = await docRef.get();
-      if (doc.exists) {
-        if(doc.data["apiKey"] === key[1])
-        {
-          return true
-        }
-      } else {
-        return false
+    const doc = await docRef.get();
+    if (doc.exists) {
+      if (doc.data["apiKey"] === key[1]) {
+        return true;
       }
+    } else {
+      return false;
+    }
   };
 
   return auth;
