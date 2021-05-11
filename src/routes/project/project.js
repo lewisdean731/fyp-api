@@ -13,9 +13,11 @@ module.exports = function (app, db) {
             projectName: req.body.projectName || doc.data().projectName,
             projectType: req.body.projectType || doc.data().projectType,
             projectDependencies: {
-              directDependencies: req.body.directDependencies || doc.data().projectDependencies.directDependencies
-            }, 
-            teamid: req.body.teamid || doc.data().teamid
+              directDependencies:
+                req.body.directDependencies ||
+                doc.data().projectDependencies.directDependencies,
+            },
+            teamid: req.body.teamid || doc.data().teamid,
           })
           .then((response) => {
             return res.json(response);

@@ -11,7 +11,7 @@ module.exports = function (app, db) {
           .update({
             // Set to the value given or the existing value by default
             admin: req.body.admin || doc.data().admin,
-            teams: req.body.teams || doc.data().teams
+            teams: req.body.teams || doc.data().teams,
           })
           .then((response) => {
             return res.json(response);
