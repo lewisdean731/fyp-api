@@ -1,8 +1,8 @@
 module.exports = function (app, db) {
   app
-    .route("/api/user/:uid")
+    .route("/api/team/:teamid")
     .post(async function (req, res) {
-      const docRef = db.collection("users").doc(req.params.uid);
+      const docRef = db.collection("teams").doc(req.params.teamid);
       const doc = await docRef.get();
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
@@ -10,8 +10,10 @@ module.exports = function (app, db) {
         await docRef
           .update({
             // Set to the value given or the existing value by default
-            admin: req.body.admin || doc.data().admin,
-            teams: req.body.teams || doc.data().teams,
+            teamName: req.body.teamName || doc.data().teamName,
+            teamMembers: req.body.teamMembers || doc.data().teamMembers,
+            teamAdmins: req.body.teamAdmins || doc.data().teamAdmins,
+            teamProjects: req.body.teamProjects || doc.data().teamProjects,
           })
           .then((response) => {
             return res.json(response);
@@ -23,21 +25,20 @@ module.exports = function (app, db) {
     })
 
     .get(async function (req, res) {
-      const docRef = db.collection("users").doc(req.params.uid);
+      const docRef = db.collection("teams").doc(req.params.teamid);
       const doc = await docRef.get();
       if (!doc.exists) {
-        return res.status(404).json({ error: "No such document!" });
+        return res.status(404).json({ error: "No such document" });
       } else {
         return res.json(doc.data());
       }
     })
 
     .put(async function (req, res) {
-      const docRef = db.collection("users").doc();
+      const docRef = db.collection("teams").doc();
       await docRef
         .set({
-          admin: req.body.admin,
-          teams: req.body.teams,
+          teamName: req.body.teamName,
         })
         .then((response) => {
           return res.json(response);
@@ -48,12 +49,7 @@ module.exports = function (app, db) {
     })
 
     .delete(async function (req, res) {
-      const docRef = db.collection("users").doc(req.params.uid);
-      if (req.get("authorization") != req.params.uid) {
-        return res
-          .status(403)
-          .json({ error: "Users can only delete themselves!" });
-      }
+      const docRef = db.collection("teams").doc(req.params.teamid);
       await docRef
         .delete()
         .then((response) => {
