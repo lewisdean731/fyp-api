@@ -39,7 +39,7 @@ module.exports = function (app, db) {
     })
 
     .put(async function (req, res) {
-      const docRef = db.collection("projects").doc(req.params.projectid);
+      const docRef = db.collection("projects").doc();
       await docRef
         .set({
           team: req.body.teamid,
