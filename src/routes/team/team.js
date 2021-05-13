@@ -41,7 +41,7 @@ module.exports = function (app, db, admin) {
           teamName: req.body.teamName,
           teamMembers: req.body.teamMembers,
           teamAdmins: req.body.teamAdmins,
-          teamProjects: {}
+          teamProjects: {},
         })
         .catch((error) => {
           return res.status(500).json(error);
@@ -51,7 +51,7 @@ module.exports = function (app, db, admin) {
       const userDocRef = db.collection("users").doc(req.body.teamAdmins[0]);
       await userDocRef
         .update({
-          teams: admin.firestore.FieldValue.arrayUnion(docRef.id)
+          teams: admin.firestore.FieldValue.arrayUnion(docRef.id),
         })
         .then((response) => {
           return res.json(response);
