@@ -41,7 +41,7 @@ module.exports = function (app, db, admin) {
           teamName: req.body.teamName,
           teamMembers: req.body.teamMembers,
           teamAdmins: req.body.teamAdmins,
-          teamProjects: {},
+          teamProjects: [],
         })
         .catch((error) => {
           return res.status(500).json(error);
