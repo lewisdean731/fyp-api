@@ -1,4 +1,4 @@
-module.exports = function (app, db) {
+module.exports = function (app, db, admin) {
   app
     .route("/api/team/:teamid")
     .post(async function (req, res) {
@@ -39,6 +39,19 @@ module.exports = function (app, db) {
       await docRef
         .set({
           teamName: req.body.teamName,
+          teamMembers: req.body.teamMembers,
+          teamAdmins: req.body.teamAdmins,
+          teamProjects: [],
+        })
+        .catch((error) => {
+          return res.status(500).json(error);
+        });
+
+      //Link new team to creating user
+      const userDocRef = db.collection("users").doc(req.body.teamAdmins[0]);
+      await userDocRef
+        .update({
+          teams: admin.firestore.FieldValue.arrayUnion(docRef.id),
         })
         .then((response) => {
           return res.json(response);
