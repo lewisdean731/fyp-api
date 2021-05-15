@@ -63,4 +63,24 @@ module.exports = function (app, db) {
           return res.status(500).json(error);
         });
     });
+
+  app
+    .route("/api/getAllProjectIds")
+    .get(async function (req, res) {
+      console.log('Get All Project IDs')
+      const collectionRef = db.collection("projects");
+      await collectionRef.get()
+      .then((snapshot) => {
+        let data = { projectIds: [] }
+        snapshot.forEach(doc => {
+          console.log(doc.id)
+          data.projectIds.push(doc.id)
+        })
+        return res.json(data)
+      })
+      .catch((error) => {
+        console.log(error)
+        return res.status(500).json(error);
+      })
+    })
 };
