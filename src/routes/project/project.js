@@ -39,10 +39,14 @@ module.exports = function (app, db) {
     })
 
     .put(async function (req, res) {
+      console.log(JSON.stringify(req.body))
       const docRef = db.collection("projects").doc();
       await docRef
         .set({
-          team: req.body.teamid,
+          projectName: req.body.projectName,
+          projectType: req.body.projectType,
+          projectDependencies: req.body.projectDependencies,
+          teamId: req.body.teamId
         })
         .then((response) => {
           return res.json(response);
@@ -93,6 +97,7 @@ module.exports = function (app, db) {
   app
     .route("/api/getAllProjectIds")
     .get(async function (req, res) {
+      console.log('Get All Project IDs')
       const collectionRef = db.collection("projects");
       await collectionRef.get()
       .then((snapshot) => {
