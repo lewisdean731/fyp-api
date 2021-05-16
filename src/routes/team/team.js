@@ -1,8 +1,8 @@
 module.exports = function (app, db, admin) {
   app
-    .route("/api/team/:teamid")
+    .route("/api/team/:teamId")
     .post(async function (req, res) {
-      const docRef = db.collection("teams").doc(req.params.teamid);
+      const docRef = db.collection("teams").doc(req.params.teamId);
       const doc = await docRef.get();
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
@@ -25,7 +25,7 @@ module.exports = function (app, db, admin) {
     })
 
     .get(async function (req, res) {
-      const docRef = db.collection("teams").doc(req.params.teamid);
+      const docRef = db.collection("teams").doc(req.params.teamId);
       const doc = await docRef.get();
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
@@ -62,7 +62,7 @@ module.exports = function (app, db, admin) {
     })
 
     .delete(async function (req, res) {
-      const docRef = db.collection("teams").doc(req.params.teamid);
+      const docRef = db.collection("teams").doc(req.params.teamId);
       await docRef
         .delete()
         .then((response) => {
