@@ -83,7 +83,10 @@ module.exports = function (app, db) {
           .then((snapshot) => {
             let data = { projectsData: [] }
             snapshot.forEach(doc => {
-              data.projectsData.push(doc.data())
+              // Add doc ID (projectId) inside doc
+              let docData = doc.data();
+              docData["projectId"] = doc.id
+              data.projectsData.push(docData)
             })
             return res.json(data)
           })
