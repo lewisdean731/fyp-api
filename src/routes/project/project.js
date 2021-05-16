@@ -17,7 +17,7 @@ module.exports = function (app, db) {
                 req.body.directDependencies ||
                 doc.data().projectDependencies.directDependencies,
             },
-            teamid: req.body.teamid || doc.data().teamid,
+            teamId: req.body.teamId || doc.data().teamId,
           })
           .then((response) => {
             return res.json(response);
@@ -77,7 +77,7 @@ module.exports = function (app, db) {
         .then(async(doc) => {
           // Get all projects matching user's teams
            const collectionRef = db.collection("projects").where(
-            "teamid", "in", doc.data().teams
+            "teamId", "in", doc.data().teams
           );
           await collectionRef.get()
           .then((snapshot) => {
