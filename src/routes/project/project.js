@@ -65,15 +65,39 @@ module.exports = function (app, db) {
     });
 
   app
+    .route("/api/getAllProjectsForUser")
+    .get(async function (req, res) {
+      // Get user's teams
+      const userRef = db.collection("users").doc(req.query.uid);
+      await userRef.get()
+        .then(async(doc) => {
+          // Get all projects matching user's teams
+           const collectionRef = db.collection("projects").where(
+            "teamid", "in", doc.data().teams
+          );
+          await collectionRef.get()
+          .then((snapshot) => {
+            let data = { projectsData: [] }
+            snapshot.forEach(doc => {
+              data.projectsData.push(doc.data())
+            })
+            return res.json(data)
+          })
+          .catch((error) => {
+            console.log(error)
+            return res.status(500).json(error);
+          })
+        })
+    })
+
+  app
     .route("/api/getAllProjectIds")
     .get(async function (req, res) {
-      console.log('Get All Project IDs')
       const collectionRef = db.collection("projects");
       await collectionRef.get()
       .then((snapshot) => {
         let data = { projectIds: [] }
         snapshot.forEach(doc => {
-          console.log(doc.id)
           data.projectIds.push(doc.id)
         })
         return res.json(data)
