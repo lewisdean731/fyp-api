@@ -33,11 +33,11 @@ module.exports = function (app, db) {
     })
 
     .put(async function (req, res) {
-      const docRef = db.collection("users").doc();
+      const docRef = db.collection("users").doc(req.body.uid);
       await docRef
         .set({
-          admin: req.body.admin,
-          teams: req.body.teams,
+          admin: false,
+          teams: [],
         })
         .then((response) => {
           return res.json(response);
