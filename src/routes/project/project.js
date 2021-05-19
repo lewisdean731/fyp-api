@@ -54,8 +54,8 @@ module.exports = function (app, db, admin) {
         teamId: req.body.teamId,
       });
       // Link new project to team
-      const userDocRef = db.collection("teams").doc(req.body.teamId);
-      await userDocRef
+      const teamDocRef = db.collection("teams").doc(req.body.teamId);
+      await teamDocRef
         .update({
           teamProjects: admin.firestore.FieldValue.arrayUnion(docRef.id),
         })
@@ -69,14 +69,24 @@ module.exports = function (app, db, admin) {
 
     .delete(async function (req, res) {
       const docRef = db.collection("projects").doc(req.params.projectid);
-      await docRef
-        .delete()
-        .then((response) => {
-          return res.json(response);
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-        });
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ error: "No such document" });
+      }
+      await docRef.delete().then((response) => {
+        // Delete project ID from team
+        const teamDocRef = db.collection("teams").doc(doc.data().teamId);
+        teamDocRef
+          .update({
+            teamProjects: admin.firestore.FieldValue.arrayRemove(docRef.id),
+          })
+          .then(() => {
+            return res.json(response);
+          })
+          .catch((error) => {
+            return res.status(500).json(error);
+          });
+      });
     });
 
   app.route("/api/getAllProjectsForUser").get(async function (req, res) {
