@@ -48,25 +48,24 @@ module.exports = function (app, db, admin) {
         return res.status(400).json({ error: "Project type not allowed" });
       }
       const docRef = db.collection("projects").doc();
-      await docRef
-        .set({
-          projectName: req.body.projectName,
-          projectType: req.body.projectType,
-          projectDependencies: req.body.projectDependencies,
-          teamId: req.body.teamId,
+      await docRef.set({
+        projectName: req.body.projectName,
+        projectType: req.body.projectType,
+        projectDependencies: req.body.projectDependencies,
+        teamId: req.body.teamId,
+      });
+      // Link new project to team
+      const userDocRef = db.collection("teams").doc(req.body.teamId);
+      await userDocRef
+        .update({
+          teamProjects: admin.firestore.FieldValue.arrayUnion(docRef.id),
         })
-        // Link new project to team
-        const userDocRef = db.collection("teams").doc(req.body.teamId);
-        await userDocRef
-          .update({
-            teamProjects: admin.firestore.FieldValue.arrayUnion(docRef.id),
-          })
-          .then((response) => {
-            return res.json(response);
-          })
-          .catch((error) => {
-            return res.status(500).json(error);
-          });
+        .then((response) => {
+          return res.json(response);
+        })
+        .catch((error) => {
+          return res.status(500).json(error);
+        });
     })
 
     .delete(async function (req, res) {

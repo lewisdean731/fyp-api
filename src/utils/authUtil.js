@@ -25,7 +25,7 @@ module.exports = function (admin, db) {
         return true;
       }
     } else {
-      console.log('API Key not found or incorrect')
+      console.log("API Key not found or incorrect");
       return false;
     }
   };
