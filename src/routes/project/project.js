@@ -8,10 +8,10 @@ module.exports = function (app, db, admin) {
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
       }
-      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+      if (req.body.projectType && !["npm"].includes(Object.keys(req.body.projectType)[0])) {
         return res.status(400).json({ error: "Project type not allowed" });
       } else {
-        await docRef
+        docRef
           .update({
             // Set to the value given or the existing value by default
             projectName: req.body.projectName || doc.data().projectName,
