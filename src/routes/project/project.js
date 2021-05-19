@@ -8,7 +8,10 @@ module.exports = function (app, db, admin) {
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
       }
-      if (req.body.projectType && !["npm"].includes(Object.keys(req.body.projectType)[0])) {
+      if (
+        req.body.projectType &&
+        !["npm"].includes(Object.keys(req.body.projectType)[0])
+      ) {
         return res.status(400).json({ error: "Project type not allowed" });
       } else {
         docRef
