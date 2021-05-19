@@ -1,11 +1,15 @@
-module.exports = function (app, db) {
+module.exports = function (app, db, admin) {
   app
     .route("/api/project/:projectid")
     .post(async function (req, res) {
       const docRef = db.collection("projects").doc(req.params.projectid);
       const doc = await docRef.get();
+      // Check document exists AND project is of allowed type
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
+      }
+      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+        return res.status(400).json({ error: "Project type not allowed" });
       } else {
         await docRef
           .update({
@@ -17,7 +21,6 @@ module.exports = function (app, db) {
                 req.body.directDependencies ||
                 doc.data().projectDependencies.directDependencies,
             },
-            teamId: req.body.teamId || doc.data().teamId,
           })
           .then((response) => {
             return res.json(response);
@@ -40,13 +43,21 @@ module.exports = function (app, db) {
 
     .put(async function (req, res) {
       console.log(JSON.stringify(req.body));
+      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+        return res.status(400).json({ error: "Project type not allowed" });
+      }
       const docRef = db.collection("projects").doc();
-      await docRef
-        .set({
-          projectName: req.body.projectName,
-          projectType: req.body.projectType,
-          projectDependencies: req.body.projectDependencies,
-          teamId: req.body.teamId,
+      await docRef.set({
+        projectName: req.body.projectName,
+        projectType: req.body.projectType,
+        projectDependencies: req.body.projectDependencies,
+        teamId: req.body.teamId,
+      });
+      // Link new project to team
+      const teamDocRef = db.collection("teams").doc(req.body.teamId);
+      await teamDocRef
+        .update({
+          teamProjects: admin.firestore.FieldValue.arrayUnion(docRef.id),
         })
         .then((response) => {
           return res.json(response);
@@ -58,14 +69,33 @@ module.exports = function (app, db) {
 
     .delete(async function (req, res) {
       const docRef = db.collection("projects").doc(req.params.projectid);
-      await docRef
-        .delete()
-        .then((response) => {
-          return res.json(response);
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ error: "No such document" });
+      }
+      const teamDocRef = db.collection("teams").doc(doc.data().teamId);
+      const teamDoc = await teamDocRef.get();
+
+      // Check is user is admin of project's team first
+      if (teamDoc.data().teamAdmins.includes(req.uid)) {
+        await docRef.delete().then((response) => {
+          // Delete project ID from team
+          const teamDocRef = db.collection("teams").doc(doc.data().teamId);
+          teamDocRef
+            .update({
+              teamProjects: admin.firestore.FieldValue.arrayRemove(docRef.id),
+            })
+            .then(() => {
+              return res.json(response);
+            })
+            .catch((error) => {
+              return res.status(500).json(error);
+            });
         });
+      }
+      return res
+        .status(403)
+        .json({ error: "Only team admins can delete projects" });
     });
 
   app.route("/api/getAllProjectsForUser").get(async function (req, res) {

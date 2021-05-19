@@ -27,16 +27,19 @@ app.use(async function (req, res, next) {
     if (!req.get("authorization")) {
       return res.status(403).json({ error: "No authorization given" });
     }
-    if (auth.verifyToken(req.get("authorization")) === false) {
-      return res.status(403).json({ error: "Unauthorised" });
-    }
+    auth.verifyToken(req.get("authorization"), function (uid) {
+      if (uid === false) {
+        return res.status(403).json({ error: "Unauthorised" });
+      }
+      req["tokenUid"] = uid;
+    });
   }
   next();
 });
 
 require("./routes/auth/auth.js")(app, admin);
 require("./routes/user/user.js")(app, db);
-require("./routes/project/project.js")(app, db);
+require("./routes/project/project.js")(app, db, admin);
 require("./routes/team/team.js")(app, db, admin);
 
 app.get("/", (req, res) => {

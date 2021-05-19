@@ -1,16 +1,16 @@
 // Admin SDK
 module.exports = function (admin, db) {
   var auth = {};
-  auth.verifyToken = function (token) {
+  auth.verifyToken = function (token, callback) {
     console.log(`Verifying token ${token.slice(0, 10)}...`);
     admin
       .auth()
       .verifyIdToken(token)
       .then((decodedToken) => {
-        return decodedToken.uid;
+        callback(decodedToken.uid);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.message);
         return false;
       });
   };
@@ -25,6 +25,7 @@ module.exports = function (admin, db) {
         return true;
       }
     } else {
+      console.log("API Key not found or incorrect");
       return false;
     }
   };
