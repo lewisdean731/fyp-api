@@ -10,7 +10,7 @@ module.exports = function (admin, db) {
         return decodedToken.uid;
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.message);
         return false;
       });
   };
@@ -25,6 +25,7 @@ module.exports = function (admin, db) {
         return true;
       }
     } else {
+      console.log('API Key not found or incorrect')
       return false;
     }
   };
