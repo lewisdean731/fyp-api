@@ -21,7 +21,6 @@ module.exports = function (app, db, admin) {
                 req.body.directDependencies ||
                 doc.data().projectDependencies.directDependencies,
             },
-            teamId: req.body.teamId || doc.data().teamId,
           })
           .then((response) => {
             return res.json(response);
