@@ -36,7 +36,7 @@ app.use(async function (req, res, next) {
 
 require("./routes/auth/auth.js")(app, admin);
 require("./routes/user/user.js")(app, db);
-require("./routes/project/project.js")(app, db);
+require("./routes/project/project.js")(app, db, admin);
 require("./routes/team/team.js")(app, db, admin);
 
 app.get("/", (req, res) => {

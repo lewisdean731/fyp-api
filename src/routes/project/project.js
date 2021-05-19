@@ -1,4 +1,4 @@
-module.exports = function (app, db) {
+module.exports = function (app, db, admin) {
   app
     .route("/api/project/:projectid")
     .post(async function (req, res) {
@@ -55,12 +55,18 @@ module.exports = function (app, db) {
           projectDependencies: req.body.projectDependencies,
           teamId: req.body.teamId,
         })
-        .then((response) => {
-          return res.json(response);
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-        });
+        // Link new project to team
+        const userDocRef = db.collection("teams").doc(req.body.teamId);
+        await userDocRef
+          .update({
+            teamProjects: admin.firestore.FieldValue.arrayUnion(docRef.id),
+          })
+          .then((response) => {
+            return res.json(response);
+          })
+          .catch((error) => {
+            return res.status(500).json(error);
+          });
     })
 
     .delete(async function (req, res) {
