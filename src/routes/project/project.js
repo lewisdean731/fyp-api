@@ -4,8 +4,12 @@ module.exports = function (app, db) {
     .post(async function (req, res) {
       const docRef = db.collection("projects").doc(req.params.projectid);
       const doc = await docRef.get();
+      // Check document exists AND project is of allowed type
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
+      }
+      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+        return res.status(400).json({ error: "Project type not allowed" });
       } else {
         await docRef
           .update({
@@ -40,6 +44,9 @@ module.exports = function (app, db) {
 
     .put(async function (req, res) {
       console.log(JSON.stringify(req.body));
+      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+        return res.status(400).json({ error: "Project type not allowed" });
+      }
       const docRef = db.collection("projects").doc();
       await docRef
         .set({
