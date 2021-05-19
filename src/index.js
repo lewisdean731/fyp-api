@@ -27,11 +27,11 @@ app.use(async function (req, res, next) {
     if (!req.get("authorization")) {
       return res.status(403).json({ error: "No authorization given" });
     }
-    auth.verifyToken(req.get("authorization"), function(uid) {
-      if(uid === false) {
+    auth.verifyToken(req.get("authorization"), function (uid) {
+      if (uid === false) {
         return res.status(403).json({ error: "Unauthorised" });
       }
-      req["tokenUid"] = uid
+      req["tokenUid"] = uid;
     });
   }
   next();

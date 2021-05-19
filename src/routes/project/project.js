@@ -77,7 +77,7 @@ module.exports = function (app, db, admin) {
       const teamDoc = await teamDocRef.get();
 
       // Check is user is admin of project's team first
-      if(teamDoc.data().teamAdmins.includes(req.uid)){
+      if (teamDoc.data().teamAdmins.includes(req.uid)) {
         await docRef.delete().then((response) => {
           // Delete project ID from team
           const teamDocRef = db.collection("teams").doc(doc.data().teamId);
@@ -93,7 +93,9 @@ module.exports = function (app, db, admin) {
             });
         });
       }
-      return res.status(403).json({ error: "Only team admins can delete projects" })
+      return res
+        .status(403)
+        .json({ error: "Only team admins can delete projects" });
     });
 
   app.route("/api/getAllProjectsForUser").get(async function (req, res) {
