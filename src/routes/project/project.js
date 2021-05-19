@@ -21,6 +21,10 @@ module.exports = function (app, db, admin) {
                 req.body.directDependencies ||
                 doc.data().projectDependencies.directDependencies,
             },
+            yellowWarningPeriod: parseInt(req.body.yellowWarningPeriod) || 
+              doc.data().yellowWarningPeriod,
+            redWarningPeriod: parseInt(req.body.redWarningPeriod) || 
+              doc.data().redWarningPeriod,
           })
           .then((response) => {
             return res.json(response);
@@ -52,6 +56,11 @@ module.exports = function (app, db, admin) {
         projectType: req.body.projectType,
         projectDependencies: req.body.projectDependencies,
         teamId: req.body.teamId,
+        yellowWarningPeriod: parseInt(req.body.yellowWarningPeriod) || 8.64e+8, // 10 days
+        redWarningPeriod: parseInt(req.body.redWarningPeriod) || 1.296e+9, // 15 days
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
       });
       // Link new project to team
       const teamDocRef = db.collection("teams").doc(req.body.teamId);
@@ -94,9 +103,9 @@ module.exports = function (app, db, admin) {
         });
       } else {
         console.log(`User ${res.uid} tried to delete project ${req.params.projectid} when the team admins are ${teamDoc.data().teamAdmins}`)
-      return res
-        .status(403)
-        .json({ error: "Only team admins can delete projects" });
+        return res
+          .status(403)
+          .json({ error: "Only team admins can delete projects" });
       }
     });
 
