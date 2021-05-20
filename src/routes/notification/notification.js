@@ -42,6 +42,42 @@ module.exports = function (app, db, admin) {
     });
 
   app.route("/api/getNotificationsForUser").get(async function (req, res) {
+    // Get user's teams
+    const userRef = db.collection("users").doc(req.query.uid);
+    await userRef.get().then(async (doc) => {
+      // Get all projects matching user's teams
+      let collectionRef = db
+        .collection("projects")
+        .where("teamId", "in", doc.data().teams);
+      await collectionRef
+        .get()
+        .then(async (snapshot) => {
+          let projectIds = []
+          snapshot.forEach((doc) => {
+            projectIds.push(doc.id)
+          });
+          // Get all notifs matching projectIds list
+          collectionRef = db
+            .collection("notifications")
+            .where("projectId", "in", projectIds);
+          await collectionRef
+            .get()
+            .then((snapshot) => {
+              let data = { notificationsData: [] };
+              snapshot.forEach((doc) => {
+                // Add doc ID (notificationId) inside doc
+                let docData = doc.data();
+                docData["notificationId"] = doc.id;
+                data.notificationsData.push(docData);
+          });
+          return res.json(data);
+        })
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).json(error);
+        });
+    });
 
   });
 };
