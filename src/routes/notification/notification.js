@@ -10,22 +10,27 @@ module.exports = function (app, db, admin) {
     })
 
     .put(async function (req, res) {
-      const docRef = db.collection("notifications").doc();
-      docRef
-        .set({
-          severity: req.body.severity,
-          message: req.body.message,
-          projectName: req.body.projectName,
-          projectId: req.body.projectId,
-          timestamp: new Date().getTime(),
-          acknowledged: false,
-        })
-        .then((response) => {
-          return res.json(response);
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-        });
+      if(req.body.projectId && req.body.dependencyName && req.body.nextVersion){
+        const docRef = db.collection("notifications").doc(`${req.body.projectId}.${req.body.dependencyName}.${req.body.nextVersion}`);
+        docRef
+          .set({
+            severity: req.body.severity,
+            message: req.body.message,
+            projectName: req.body.projectName,
+            projectId: req.body.projectId,
+            timestamp: new Date().getTime(),
+            nextVersion: req.body.nextVersion,
+            acknowledged: false,
+          })
+          .then((response) => {
+            return res.json(response);
+          })
+          .catch((error) => {
+            return res.status(500).json(error);
+          });
+      } else {
+        return res.status(400).json({error: "Missing properties from request"});
+      }
     })
 
     .delete(async function (req, res) {
