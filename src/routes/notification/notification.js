@@ -43,7 +43,7 @@ module.exports = function (app, db, admin) {
 
   app.route("/api/getNotificationsForUser").get(async function (req, res) {
     // Get user's teams
-    const userRef = db.collection("users").doc(req.query.uid);
+    const userRef = db.collection("users").doc(req.tokenUid);
     await userRef.get().then(async (doc) => {
       // Get all projects matching user's teams
       let collectionRef = db
