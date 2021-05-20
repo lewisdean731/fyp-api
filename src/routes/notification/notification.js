@@ -12,6 +12,10 @@ module.exports = function (app, db, admin) {
     .put(async function (req, res) {
       if(req.body.projectId && req.body.dependencyName && req.body.nextVersion){
         const docRef = db.collection("notifications").doc(`${req.body.projectId}.${req.body.dependencyName}.${req.body.nextVersion}`);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+          return res.status(200) // Stop if notification already exists
+        }
         docRef
           .set({
             severity: req.body.severity,
