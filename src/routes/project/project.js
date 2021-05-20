@@ -8,10 +8,13 @@ module.exports = function (app, db, admin) {
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
       }
-      if (!["npm"].includes(Object.keys(req.body.projectType)[0])) {
+      if (
+        req.body.projectType &&
+        !["npm"].includes(Object.keys(req.body.projectType)[0])
+      ) {
         return res.status(400).json({ error: "Project type not allowed" });
       } else {
-        await docRef
+        docRef
           .update({
             // Set to the value given or the existing value by default
             projectName: req.body.projectName || doc.data().projectName,
@@ -27,6 +30,8 @@ module.exports = function (app, db, admin) {
             redWarningPeriod:
               parseInt(req.body.redWarningPeriod) ||
               doc.data().redWarningPeriod,
+            lastScannedAt: req.body.lastScannedAt || doc.data().lastScannedAt,
+            scanErrors: req.body.scanErrors || doc.data().scanErrors || {},
           })
           .then((response) => {
             return res.json(response);
@@ -61,6 +66,8 @@ module.exports = function (app, db, admin) {
           teamId: req.body.teamId,
           yellowWarningPeriod: parseInt(req.body.yellowWarningPeriod) || 8.64e8, // 10 days
           redWarningPeriod: parseInt(req.body.redWarningPeriod) || 1.296e9, // 15 days
+          lastScannedAt: "Not scanned yet",
+          scanErrors: {},
         })
         .catch((error) => {
           return res.status(500).json(error);
