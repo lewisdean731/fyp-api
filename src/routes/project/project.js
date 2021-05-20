@@ -30,7 +30,7 @@ module.exports = function (app, db, admin) {
             redWarningPeriod:
               parseInt(req.body.redWarningPeriod) ||
               doc.data().redWarningPeriod,
-            lastScannedAt: req.body.lastScannedAt || doc.data().lastScannedAt,
+            lastScannedAt: req.body.lastScannedAt || doc.data().lastScannedAt || 0,
             scanErrors: req.body.scanErrors || doc.data().scanErrors || {},
           })
           .then((response) => {
@@ -66,7 +66,7 @@ module.exports = function (app, db, admin) {
           teamId: req.body.teamId,
           yellowWarningPeriod: parseInt(req.body.yellowWarningPeriod) || 8.64e8, // 10 days
           redWarningPeriod: parseInt(req.body.redWarningPeriod) || 1.296e9, // 15 days
-          lastScannedAt: "Not scanned yet",
+          lastScannedAt: 0,
           scanErrors: {},
         })
         .catch((error) => {
