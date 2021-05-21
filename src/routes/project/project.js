@@ -69,6 +69,8 @@ module.exports = function (app, db, admin) {
           redWarningPeriod: parseInt(req.body.redWarningPeriod) || 1.296e9, // 15 days
           lastScannedAt: 0,
           scanErrors: {},
+          authUsername: req.body.authUsername,
+          authPassword: req.body.authPassword,
         })
         .catch((error) => {
           return res.status(500).json(error);
