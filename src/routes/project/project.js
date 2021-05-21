@@ -30,7 +30,8 @@ module.exports = function (app, db, admin) {
             redWarningPeriod:
               parseInt(req.body.redWarningPeriod) ||
               doc.data().redWarningPeriod,
-            lastScannedAt: req.body.lastScannedAt || doc.data().lastScannedAt || 0,
+            lastScannedAt:
+              req.body.lastScannedAt || doc.data().lastScannedAt || 0,
             scanErrors: req.body.scanErrors || doc.data().scanErrors || {},
           })
           .then((response) => {

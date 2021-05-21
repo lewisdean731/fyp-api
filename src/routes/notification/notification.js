@@ -2,7 +2,9 @@ module.exports = function (app, db, admin) {
   app
     .route("/api/notification/:notificationId")
     .post(async function (req, res) {
-      const docRef = db.collection("notifications").doc(req.params.notificationId);
+      const docRef = db
+        .collection("notifications")
+        .doc(req.params.notificationId);
       const doc = await docRef.get();
       if (!doc.exists) {
         return res.status(404).json({ error: "No such document" });
@@ -20,16 +22,22 @@ module.exports = function (app, db, admin) {
       }
     })
 
-    .get(async function (req, res) {
-
-    })
+    .get(async function (req, res) {})
 
     .put(async function (req, res) {
-      if(req.body.projectId && req.body.dependencyName && req.body.nextVersion){
-        const docRef = db.collection("notifications").doc(`${req.body.projectId}.${req.body.dependencyName}.${req.body.nextVersion}`);
+      if (
+        req.body.projectId &&
+        req.body.dependencyName &&
+        req.body.nextVersion
+      ) {
+        const docRef = db
+          .collection("notifications")
+          .doc(
+            `${req.body.projectId}.${req.body.dependencyName}.${req.body.nextVersion}`
+          );
         const doc = await docRef.get();
         if (doc.exists) {
-          return res.status(304) // Stop if notification already exists
+          return res.status(304); // Stop if notification already exists
         }
         docRef
           .set({
@@ -48,17 +56,17 @@ module.exports = function (app, db, admin) {
             return res.status(500).json(error);
           });
       } else {
-        return res.status(400).json({error: "Missing properties from request"});
+        return res
+          .status(400)
+          .json({ error: "Missing properties from request" });
       }
     })
 
-    .delete(async function (req, res) {
-
-    });
+    .delete(async function (req, res) {});
 
   app.route("/api/getNotificationsForUser").get(async function (req, res) {
-    if(!req.tokenUid){
-      return res.status(401).json({error: "please provide an access token"});
+    if (!req.tokenUid) {
+      return res.status(401).json({ error: "please provide an access token" });
     }
     // Get user's teams
     const userRef = db.collection("users").doc(req.tokenUid);
@@ -70,35 +78,32 @@ module.exports = function (app, db, admin) {
       await collectionRef
         .get()
         .then(async (snapshot) => {
-          let projectIds = []
+          let projectIds = [];
           snapshot.forEach((doc) => {
-            projectIds.push(doc.id)
+            projectIds.push(doc.id);
           });
           // Get all notifs matching projectIds list
           collectionRef = db
             .collection("notifications")
             .where("projectId", "in", projectIds);
-          await collectionRef
-            .get()
-            .then((snapshot) => {
-              let data = { notificationsData: [] };
-              snapshot.forEach((doc) => {
-                // Add doc ID (notificationId) inside doc
-                let docData = doc.data();
-                if(doc.data().acknowledged){
-                  return;
-                }
-                docData["notificationId"] = doc.id;
-                data.notificationsData.push(docData);
+          await collectionRef.get().then((snapshot) => {
+            let data = { notificationsData: [] };
+            snapshot.forEach((doc) => {
+              // Add doc ID (notificationId) inside doc
+              let docData = doc.data();
+              if (doc.data().acknowledged) {
+                return;
+              }
+              docData["notificationId"] = doc.id;
+              data.notificationsData.push(docData);
+            });
+            return res.json(data);
           });
-          return res.json(data);
-        })
         })
         .catch((error) => {
           console.log(error);
           return res.status(500).json(error);
         });
     });
-
   });
 };
