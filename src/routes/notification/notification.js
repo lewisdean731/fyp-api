@@ -2,7 +2,22 @@ module.exports = function (app, db, admin) {
   app
     .route("/api/notification/:notificationId")
     .post(async function (req, res) {
-    
+      const docRef = db.collection("notifications").doc(req.params.notificationId);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ error: "No such document" });
+      } else {
+        await docRef
+          .update({
+            acknowledged: true,
+          })
+          .then((response) => {
+            return res.json(response);
+          })
+          .catch((error) => {
+            return res.status(500).json(error);
+          });
+      }
     })
 
     .get(async function (req, res) {
@@ -70,6 +85,9 @@ module.exports = function (app, db, admin) {
               snapshot.forEach((doc) => {
                 // Add doc ID (notificationId) inside doc
                 let docData = doc.data();
+                if(doc.data().acknowledged){
+                  return;
+                }
                 docData["notificationId"] = doc.id;
                 data.notificationsData.push(docData);
           });
