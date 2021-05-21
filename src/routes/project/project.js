@@ -70,7 +70,7 @@ module.exports = function (app, db, admin) {
           lastScannedAt: 0,
           scanErrors: {},
           authUsername: req.body.authUsername,
-          authPassword: req.body.authPassword
+          authPassword: req.body.authPassword,
         })
         .catch((error) => {
           return res.status(500).json(error);
