@@ -1,17 +1,17 @@
 // Admin SDK
 module.exports = function (admin, db) {
   var auth = {};
-  auth.verifyToken = function (token, callback) {
+  auth.verifyToken = async function (token) {
     console.log(`Verifying token ${token.slice(0, 10)}...`);
-    admin
+    return await admin
       .auth()
       .verifyIdToken(token)
       .then((decodedToken) => {
-        callback(decodedToken.uid);
+        return decodedToken.uid;
       })
       .catch((error) => {
         console.log(error.message);
-        return false;
+        throw false;
       });
   };
 
