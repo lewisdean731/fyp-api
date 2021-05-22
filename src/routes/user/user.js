@@ -34,17 +34,62 @@ module.exports = function (app, db) {
 
     .put(async function (req, res) {
       const docRef = db.collection("users").doc(req.body.uid);
-      await docRef
+      const response = await docRef
         .set({
           admin: false,
           teams: [],
         })
-        .then((response) => {
-          return res.json(response);
+        .catch((error) => {
+          return res.status(500).json(error);
+        });
+
+      // create metrics for user
+      let metricRef = db.collection("metrics").doc(req.body.uid)
+      .collection('totalDependencies').doc();
+      await metricRef
+        .set({
+          timestamp: new Date().getTime(),
+          value: 0,
         })
         .catch((error) => {
           return res.status(500).json(error);
         });
+
+      metricRef = db.collection("metrics").doc(req.body.uid)
+      .collection('greenDependencies').doc();
+      await metricRef
+        .set({
+          timestamp: new Date().getTime(),
+          value: 0,
+        })
+        .catch((error) => {
+          return res.status(500).json(error);
+        });
+      
+      metricRef = db.collection("metrics").doc(req.body.uid)
+      .collection('yellowDependencies').doc();
+      await metricRef
+        .set({
+          timestamp: new Date().getTime(),
+          value: 0,
+        })
+        .catch((error) => {
+          return res.status(500).json(error);
+          });
+        
+      metricRef = db.collection("metrics").doc(req.body.uid)
+      .collection('redDependencies').doc();
+      await metricRef
+        .set({
+          timestamp: new Date().getTime(),
+          value: 0,
+        })
+        .catch((error) => {
+          return res.status(500).json(error);
+          });
+
+      return res.json(response);
+
     })
 
     .delete(async function (req, res) {
