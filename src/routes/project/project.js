@@ -33,6 +33,8 @@ module.exports = function (app, db, admin) {
             lastScannedAt:
               req.body.lastScannedAt || doc.data().lastScannedAt || 0,
             scanErrors: req.body.scanErrors || doc.data().scanErrors || {},
+            authUsername: req.body.authUsername || doc.data().authUsername,
+            authPassword: req.body.authPassword || doc.data().authPassword,
           })
           .then((response) => {
             return res.json(response);

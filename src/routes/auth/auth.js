@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 
 module.exports = function (app, admin) {
   app.get("/api/auth/verifyToken", (req, res) => {
@@ -14,19 +14,20 @@ module.exports = function (app, admin) {
       });
   });
 
-  app.post("/api/auth/verifyProjectCredentials", async(req, res) => {
-    console.log(`Verifying ${req.body.url}`)
-    await axios.get(req.body.url, {
+  app.post("/api/auth/verifyProjectCredentials", async (req, res) => {
+    console.log(`Verifying ${req.body.url}`);
+    await axios
+      .get(req.body.url, {
         auth: {
           username: req.body.username,
           password: req.body.password,
         },
       })
       .then(() => {
-        res.send(true)
+        res.send(true);
       })
       .catch(() => {
-        res.send(false)
+        res.send(false);
       });
   });
 };
