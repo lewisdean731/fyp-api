@@ -15,7 +15,19 @@ module.exports = function (app, db, admin) {
       })
     })
 
-    .put(async function (req, res) {})
+    .put(async function (req, res) {
+      db.collection("metrics").doc(req.params.metricId)
+      .collection(req.body.metricName).doc((req.body.timestamp).toString())
+      .set({
+        value: req.body.value,
+      })
+      .then((response) => {
+        return res.status(200).json(response);
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
+    })
 
     .delete(async function (req, res) {});
 
