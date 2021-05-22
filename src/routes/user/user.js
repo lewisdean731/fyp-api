@@ -108,4 +108,22 @@ module.exports = function (app, db) {
           return res.status(500).json(error);
         });
     });
+
+    app.route("/api/getAllUserIds").get(async function (req, res) {
+      console.log("Get All User IDs");
+      const collectionRef = db.collection("users");
+      await collectionRef
+        .get()
+        .then((snapshot) => {
+          let data = { userIds: [] };
+          snapshot.forEach((doc) => {
+            data.userIds.push(doc.id);
+          });
+          return res.json(data);
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).json(error);
+        });
+    });
 };
