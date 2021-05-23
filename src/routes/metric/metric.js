@@ -19,6 +19,7 @@ module.exports = function (app, db, admin) {
           return res.json(response);
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     })
@@ -70,6 +71,7 @@ module.exports = function (app, db, admin) {
           return res.status(200).json(response);
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     })

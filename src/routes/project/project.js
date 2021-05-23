@@ -40,6 +40,7 @@ module.exports = function (app, db, admin) {
             return res.json(response);
           })
           .catch((error) => {
+            console.log(JSON.stringify(error));
             return res.status(500).json(error);
           });
       }
@@ -75,6 +76,7 @@ module.exports = function (app, db, admin) {
           authPassword: req.body.authPassword,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
       // Link new project to team
@@ -87,6 +89,7 @@ module.exports = function (app, db, admin) {
           return res.json(response);
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     })
@@ -113,6 +116,7 @@ module.exports = function (app, db, admin) {
               return res.json(response);
             })
             .catch((error) => {
+              console.log(JSON.stringify(error));
               return res.status(500).json(error);
             });
         });
@@ -152,7 +156,7 @@ module.exports = function (app, db, admin) {
           return res.json(data);
         })
         .catch((error) => {
-          console.log(error);
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     });
@@ -171,7 +175,7 @@ module.exports = function (app, db, admin) {
         return res.json(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(JSON.stringify(error));
         return res.status(500).json(error);
       });
   });

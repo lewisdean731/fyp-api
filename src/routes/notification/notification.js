@@ -17,6 +17,7 @@ module.exports = function (app, db, admin) {
             return res.json(response);
           })
           .catch((error) => {
+            console.log(JSON.stringify(error));
             return res.status(500).json(error);
           });
       }
@@ -53,6 +54,7 @@ module.exports = function (app, db, admin) {
             return res.json(response);
           })
           .catch((error) => {
+            console.log(JSON.stringify(error));
             return res.status(500).json(error);
           });
       } else {
@@ -107,7 +109,7 @@ module.exports = function (app, db, admin) {
           });
         })
         .catch((error) => {
-          console.log(error);
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     });
