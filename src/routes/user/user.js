@@ -17,6 +17,7 @@ module.exports = function (app, db) {
             return res.json(response);
           })
           .catch((error) => {
+            console.log(JSON.stringify(error));
             return res.status(500).json(error);
           });
       }
@@ -40,6 +41,7 @@ module.exports = function (app, db) {
           teams: [],
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -55,6 +57,7 @@ module.exports = function (app, db) {
           value: 0,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -69,6 +72,7 @@ module.exports = function (app, db) {
           value: 0,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -83,6 +87,7 @@ module.exports = function (app, db) {
           value: 0,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -97,6 +102,7 @@ module.exports = function (app, db) {
           value: 0,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -109,6 +115,7 @@ module.exports = function (app, db) {
           redProjects: 0,
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
 
@@ -128,6 +135,7 @@ module.exports = function (app, db) {
           return res.json(response);
         })
         .catch((error) => {
+          console.log(JSON.stringify(error));
           return res.status(500).json(error);
         });
     });
@@ -145,7 +153,7 @@ module.exports = function (app, db) {
         return res.json(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(JSON.stringify(error));
         return res.status(500).json(error);
       });
   });
