@@ -133,6 +133,9 @@ module.exports = function (app, db, admin) {
     const userRef = db.collection("users").doc(req.query.uid);
     await userRef.get().then(async (doc) => {
       // Get all projects matching user's teams
+      if (!doc.data().teams[0]) {
+        return res.status(200).json({ projectsData: [] });
+      }
       const collectionRef = db
         .collection("projects")
         .where("teamId", "in", doc.data().teams);

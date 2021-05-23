@@ -72,6 +72,9 @@ module.exports = function (app, db, admin) {
     const userRef = db.collection("users").doc(req.tokenUid);
     await userRef.get().then(async (doc) => {
       // Get all projects matching user's teams
+      if (!doc.data().teams[0]) {
+        return res.status(200).json({ notificationsData: [] });
+      }
       let collectionRef = db
         .collection("projects")
         .where("teamId", "in", doc.data().teams);
@@ -83,6 +86,9 @@ module.exports = function (app, db, admin) {
             projectIds.push(doc.id);
           });
           // Get all notifs matching projectIds list
+          if (!projectIds[0]) {
+            return res.status(200).json({ notificationsData: [] });
+          }
           collectionRef = db
             .collection("notifications")
             .where("projectId", "in", projectIds);
