@@ -4,6 +4,10 @@ module.exports = function (app, db, admin) {
     .post(async function (req, res) {})
 
     .get(async function (req, res) {
+      const timeSeriesMetrics = ['totalDependencies', 'greenDependencies', 'yellowDependencies', 'redDependencies']
+      // Differentiate for timeseries metrics
+      console.log(req.query.metricName)
+      if(timeSeriesMetrics.includes(req.query.metricName)) {
       let timeSeries = []
       db.collection("metrics").doc(req.params.metricId)
       .collection(req.query.metricName).get()
@@ -13,6 +17,19 @@ module.exports = function (app, db, admin) {
         })
         return res.status(200).json(timeSeries)
       })
+        .catch((error) => {
+          console.log(error)
+          return res.status(404).json({ error: "No such collection!" });
+        })
+      } else {
+        const docRef = db.collection("metrics").doc(req.params.metricId);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+          return res.status(404).json({ error: "No such document!" });
+        } else {
+          return res.json(doc.data());
+        }
+      }
     })
 
     .put(async function (req, res) {
