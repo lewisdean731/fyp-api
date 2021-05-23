@@ -25,7 +25,6 @@ module.exports = function (app, db, admin) {
     .get(async function (req, res) {
       const timeSeriesMetrics = ['totalDependencies', 'greenDependencies', 'yellowDependencies', 'redDependencies']
       // Differentiate for timeseries metrics
-      console.log(req.query.metricName)
       if(timeSeriesMetrics.includes(req.query.metricName)) {
         let timeSeries = []
         db.collection("metrics").doc(req.params.metricId)
