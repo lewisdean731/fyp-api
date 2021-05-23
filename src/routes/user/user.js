@@ -46,47 +46,55 @@ module.exports = function (app, db) {
       // create metrics for user
       let metricRef = db.collection("metrics").doc(req.body.uid)
       .collection('totalDependencies').doc();
-      await metricRef
-        .set({
-          timestamp: new Date().getTime(),
-          value: 0,
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-        });
+      await metricRef.set({
+        timestamp: new Date().getTime(),
+        value: 0,
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
 
       metricRef = db.collection("metrics").doc(req.body.uid)
       .collection('greenDependencies').doc();
-      await metricRef
-        .set({
-          timestamp: new Date().getTime(),
-          value: 0,
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-        });
-      
+      await metricRef.set({
+        timestamp: new Date().getTime(),
+        value: 0,
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
+    
       metricRef = db.collection("metrics").doc(req.body.uid)
       .collection('yellowDependencies').doc();
-      await metricRef
-        .set({
-          timestamp: new Date().getTime(),
-          value: 0,
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-          });
+      await metricRef.set({
+        timestamp: new Date().getTime(),
+        value: 0,
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
         
       metricRef = db.collection("metrics").doc(req.body.uid)
       .collection('redDependencies').doc();
+      await metricRef.set({
+        timestamp: new Date().getTime(),
+        value: 0,
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
+
+      metricRef = db.collection("metrics").doc(req.body.uid)
       await metricRef
-        .set({
-          timestamp: new Date().getTime(),
-          value: 0,
-        })
-        .catch((error) => {
-          return res.status(500).json(error);
-          });
+      .set({
+        totalProjects: 0,
+        greenProjects: 0,
+        yellowProjects: 0,
+        redProjects: 0,
+      })
+      .catch((error) => {
+        return res.status(500).json(error);
+      });
 
       return res.json(response);
 
