@@ -32,7 +32,7 @@ app.use(async function (req, res, next) {
     await auth
       .verifyToken(req.get("authorization"))
       .then((uid) => {
-        // add the decoded UID from the token to the request as 
+        // add the decoded UID from the token to the request as
         // proof of auth
         req["tokenUid"] = uid;
       })
