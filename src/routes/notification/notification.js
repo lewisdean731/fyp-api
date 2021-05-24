@@ -39,7 +39,7 @@ module.exports = function (app, db, admin) {
         const doc = await docRef.get();
         if (doc.exists) {
           // Stop if notification already exists
-          return res.status(200).json({message: "document already exists"});
+          return res.status(200).json({ message: "document already exists" });
         }
         docRef
           .set({

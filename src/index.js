@@ -23,6 +23,8 @@ app.use(async function (req, res, next) {
     if ((await auth.verifyApiKey(req.query.apiKey)) === false) {
       return res.status(403).json({ error: "Unauthorised" });
     }
+    // add the API key to the request as proof of auth
+    req["apiKey"] = req.query.apiKey;
   } else {
     if (!req.get("authorization")) {
       return res.status(403).json({ error: "No authorization given" });
@@ -30,6 +32,8 @@ app.use(async function (req, res, next) {
     await auth
       .verifyToken(req.get("authorization"))
       .then((uid) => {
+        // add the decoded UID from the token to the request as
+        // proof of auth
         req["tokenUid"] = uid;
       })
       .catch(() => {

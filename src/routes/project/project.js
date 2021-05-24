@@ -1,7 +1,19 @@
 module.exports = function (app, db, admin) {
+  const authUtil = require("../../utils/authUtil")(admin, db);
+
   app
     .route("/api/project/:projectid")
     .post(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessProject(
+          req.tokenUid,
+          req.params.projectid
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("projects").doc(req.params.projectid);
       const doc = await docRef.get();
       // Check document exists AND project is of allowed type
@@ -47,6 +59,16 @@ module.exports = function (app, db, admin) {
     })
 
     .get(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessProject(
+          req.tokenUid,
+          req.params.projectid
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("projects").doc(req.params.projectid);
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -95,6 +117,16 @@ module.exports = function (app, db, admin) {
     })
 
     .delete(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessProject(
+          req.tokenUid,
+          req.params.projectid
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("projects").doc(req.params.projectid);
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -133,6 +165,12 @@ module.exports = function (app, db, admin) {
     });
 
   app.route("/api/getAllProjectsForUser").get(async function (req, res) {
+    // Authorisation
+    if (!("apiKey" in req)) {
+      if (req.query.uid !== req.tokenUid) {
+        return res.status(403).json({ error: "Unauthorised" });
+      }
+    }
     // Get user's teams
     const userRef = db.collection("users").doc(req.query.uid);
     await userRef.get().then(async (doc) => {
@@ -164,6 +202,10 @@ module.exports = function (app, db, admin) {
 
   app.route("/api/getAllProjectIds").get(async function (req, res) {
     console.log("Get All Project IDs");
+    // Authorisation
+    if (!("apiKey" in req)) {
+      return res.status(403).json({ error: "Unauthorised" });
+    }
     const collectionRef = db.collection("projects");
     await collectionRef
       .get()
