@@ -61,5 +61,20 @@ module.exports = function (admin, db) {
       });
   };
 
+  auth.userCanAccessTeam = async function (uid, teamId) {
+    const docRef = db.collection("teams").doc(teamId);
+    return await docRef
+      .get()
+      .then((doc) => {
+        if (doc.data().teamMembers.includes(uid)) {
+          return true;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+  };
+
   return auth;
 };

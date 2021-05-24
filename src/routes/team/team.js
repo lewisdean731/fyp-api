@@ -1,7 +1,19 @@
 module.exports = function (app, db, admin) {
+  const authUtil = require("../../utils/authUtil")(admin, db);
+
   app
     .route("/api/team/:teamId")
     .post(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessTeam(
+          req.tokenUid,
+          req.params.teamId
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("teams").doc(req.params.teamId);
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -26,6 +38,16 @@ module.exports = function (app, db, admin) {
     })
 
     .get(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessTeam(
+          req.tokenUid,
+          req.params.teamId
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("teams").doc(req.params.teamId);
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -65,6 +87,16 @@ module.exports = function (app, db, admin) {
     })
 
     .delete(async function (req, res) {
+      // Authorisation
+      if (!("apiKey" in req)) {
+        const canAccess = await authUtil.userCanAccessTeam(
+          req.tokenUid,
+          req.params.teamId
+        );
+        if (!canAccess) {
+          return res.status(403).json({ error: "Unauthorised" });
+        }
+      }
       const docRef = db.collection("teams").doc(req.params.teamId);
       await docRef
         .delete()

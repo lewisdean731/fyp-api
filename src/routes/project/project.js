@@ -1,12 +1,12 @@
 module.exports = function (app, db, admin) {
-  const projectUtil = require("../../utils/authUtil")(admin, db);
+  const authUtil = require("../../utils/authUtil")(admin, db);
 
   app
     .route("/api/project/:projectid")
     .post(async function (req, res) {
       // Authorisation
       if (!("apiKey" in req)) {
-        const canAccess = await projectUtil.userCanAccessProject(
+        const canAccess = await authUtil.userCanAccessProject(
           req.tokenUid,
           req.params.projectid
         );
@@ -61,7 +61,7 @@ module.exports = function (app, db, admin) {
     .get(async function (req, res) {
       // Authorisation
       if (!("apiKey" in req)) {
-        const canAccess = await projectUtil.userCanAccessProject(
+        const canAccess = await authUtil.userCanAccessProject(
           req.tokenUid,
           req.params.projectid
         );
@@ -119,7 +119,7 @@ module.exports = function (app, db, admin) {
     .delete(async function (req, res) {
       // Authorisation
       if (!("apiKey" in req)) {
-        const canAccess = await projectUtil.userCanAccessProject(
+        const canAccess = await authUtil.userCanAccessProject(
           req.tokenUid,
           req.params.projectid
         );
