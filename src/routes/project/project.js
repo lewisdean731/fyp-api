@@ -133,6 +133,12 @@ module.exports = function (app, db, admin) {
     });
 
   app.route("/api/getAllProjectsForUser").get(async function (req, res) {
+    // Authorisation
+    if (!('apiKey' in req)) {
+      if (req.query.uid !== req.tokenUid) {
+        return res.status(403).json({ error: "Unauthorised" });
+      }
+    }
     // Get user's teams
     const userRef = db.collection("users").doc(req.query.uid);
     await userRef.get().then(async (doc) => {
@@ -164,6 +170,10 @@ module.exports = function (app, db, admin) {
 
   app.route("/api/getAllProjectIds").get(async function (req, res) {
     console.log("Get All Project IDs");
+    // Authorisation
+    if (!('apiKey' in req)) {
+      return res.status(403).json({ error: "Unauthorised" });
+    }
     const collectionRef = db.collection("projects");
     await collectionRef
       .get()
