@@ -123,16 +123,25 @@ module.exports = function (app, db) {
     })
 
     .delete(async function (req, res) {
-      const docRef = db.collection("users").doc(req.params.uid);
-      if (req.get("authorization") != req.params.uid) {
+      const userRef = db.collection("users").doc(req.params.uid);
+      const metricsRef = db.collection("metrics").doc(req.params.uid);
+      if (req.params.uid != req.tokenId) {
         return res
           .status(403)
           .json({ error: "Users can only delete themselves!" });
       }
-      await docRef
+      await userRef
         .delete()
-        .then((response) => {
-          return res.json(response);
+        .then(async () => {
+          await metricsRef
+            .delete()
+            .then((response) => {
+              return res.json(response);
+            })
+            .catch((error) => {
+              console.log(JSON.stringify(error));
+              return res.status(500).json(error);
+            });
         })
         .catch((error) => {
           console.log(JSON.stringify(error));
