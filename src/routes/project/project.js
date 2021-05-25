@@ -1,5 +1,6 @@
 module.exports = function (app, db, admin) {
   const authUtil = require("../../utils/authUtil")(admin, db);
+  const pubSubUtil = require("../../utils/pubSubUtil")();
 
   app
     .route("/api/project/:projectid")
@@ -96,6 +97,9 @@ module.exports = function (app, db, admin) {
           scanErrors: {},
           authUsername: req.body.authUsername,
           authPassword: req.body.authPassword,
+        })
+        .then(() => {
+          pubSubUtil.publishMessage({ projectId: docRef.id });
         })
         .catch((error) => {
           console.log(JSON.stringify(error));
