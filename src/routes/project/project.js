@@ -99,7 +99,7 @@ module.exports = function (app, db, admin) {
           authPassword: req.body.authPassword,
         })
         .then(() => {
-          pubSubUtil.publishMessage({ projectId: docRef.id});
+          pubSubUtil.publishMessage({ projectId: docRef.id });
         })
         .catch((error) => {
           console.log(JSON.stringify(error));
